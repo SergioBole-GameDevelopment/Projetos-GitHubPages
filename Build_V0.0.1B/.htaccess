@@ -1,0 +1,9 @@
+AddType application/wasm .wasm
+AddEncoding br .wasm.br
+AddEncoding br .js.br
+AddEncoding br .data.br
+
+RewriteEngine On
+RewriteCond %{HTTP:Accept-Encoding} br
+RewriteCond %{REQUEST_FILENAME}.br -f
+RewriteRule ^(.+)\.(wasm|js|data)$ $1.$2.br [L]
