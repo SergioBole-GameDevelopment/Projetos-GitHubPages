@@ -1,0 +1,28 @@
+<IfModule mod_mime.c>
+  # Tipos MIME
+  AddType application/wasm .wasm
+  AddType application/octet-stream .data
+  AddType application/javascript .js
+  
+  # Compressão Brotli
+  AddEncoding br .wasm.br
+  AddEncoding br .js.br
+  AddEncoding br .data.br
+  AddEncoding br .unityweb.br
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Servir arquivos comprimidos se existirem
+  RewriteCond %{HTTP:Accept-Encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -f
+  RewriteRule ^(.+\.(js|data|wasm|unityweb))$ $1.br [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Cabeçalhos para arquivos Brotli
+  <FilesMatch "\.(js|data|wasm|unityweb)\.br$">
+    Header set Content-Encoding br
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
